@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Http\Response\ApiResponseDev;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -24,7 +26,30 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+
+        });
+
+        $this->renderable(function (\Exception $e) {
+            if(getenv('APP_ENV') === 'dev') {
+                $response = new ApiResponseDev(
+                    $e->getMessage(),
+                    null,
+                    false,
+                    $e->getFile(),
+                    $e->getLine()
+                );
+                return response($response);
+            }else{
+                if($e instanceof ApiException) {
+                    throw $e;
+                }else{
+                    throw new ApiException('Ops, um erro aconteceu, já estamos trabalhando para corrigi-lo');
+                }
+            }
+        });
+
+        $this->renderable(function (UniqueConstraintViolationException $e) {
+            throw new ApiException('Esse registro já existe');
         });
     }
 }
