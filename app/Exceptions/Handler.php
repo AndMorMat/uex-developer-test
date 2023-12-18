@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use App\Http\Response\ApiResponseDev;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -26,30 +27,29 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
+            if($e instanceof UniqueConstraintViolationException) {
+                throw new ApiException('Esse registro já existe');
+            }else if($e instanceof ValidationException) {
+                throw new ApiException('Falha na validação dos dados');
+            }else if(!$e instanceof ApiException) {
+                if(getenv('APP_ENV') === 'dev') {
+                    return response(new ApiResponseDev(
+                        $e->getMessage(),
+                        null,
+                        false,
+                        $e->getFile(),
+                        $e->getLine()
+                    ));
+                } else {
 
-        });
-
-        $this->renderable(function (\Exception $e) {
-            if(getenv('APP_ENV') === 'dev') {
-                $response = new ApiResponseDev(
-                    $e->getMessage(),
-                    null,
-                    false,
-                    $e->getFile(),
-                    $e->getLine()
-                );
-                return response($response);
-            }else{
-                if($e instanceof ApiException) {
-                    throw $e;
-                }else{
-                    throw new ApiException('Ops, um erro aconteceu, já estamos trabalhando para corrigi-lo');
+                    /**
+                     * Enviar exception para algum gerenciador de logs como Sentry, e exibir
+                     * uma mensagem genérica ao usuário
+                    ***/
+                    throw new ApiException('Ops, um erro ocorreu, já estamos trabalhando para corrigi-lo');
                 }
-            }
-        });
 
-        $this->renderable(function (UniqueConstraintViolationException $e) {
-            throw new ApiException('Esse registro já existe');
+            }
         });
     }
 }
