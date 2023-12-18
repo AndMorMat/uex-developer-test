@@ -28,7 +28,8 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $this->assertEquals($response->json()['success'], 1);
+        $this->assertEquals($response->json()['message'], 'Login realizado com sucesso');
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
