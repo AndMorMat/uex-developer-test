@@ -38,7 +38,7 @@ export function EditContact({ contact }) {
                     return;
                 }
                 setIsModalVisible(false);
-                window.location.reload();
+                updateContacts();
             })
             .finally(() => {
                 setIsLoading(false);

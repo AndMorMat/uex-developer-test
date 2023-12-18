@@ -49,14 +49,14 @@ class ContactService {
                     $query->where('name', 'LIKE', "%$searchParam%")
                         ->orWhere('cpf', $searchParam);
                 })
-                ->orderBy('id', 'desc')
+                ->orderBy('name', 'asc')
                 ->get()
                 ->toArray();
         }
 
         return Contact::with('address')
                     ->where('user_id', $this->authUser->id)
-                    ->orderBy('id', 'desc')
+                    ->orderBy('name', 'asc')
                     ->limit(50)
                     ->get()
                     ->toArray();

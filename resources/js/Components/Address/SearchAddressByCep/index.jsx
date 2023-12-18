@@ -1,7 +1,7 @@
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import { Api } from "@/Services/Api";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export function SearchAddressByCep({ isVisible, setIsVisible, setDataForm }) {
     const [province, setProvince] = useState("");
@@ -39,21 +39,11 @@ export function SearchAddressByCep({ isVisible, setIsVisible, setDataForm }) {
         setDataForm((data) => ({
             ...data,
             neighborhood: item.bairro,
-        }));
-        setDataForm((data) => ({
-            ...data,
             city: item.localidade,
-        }));
-        setDataForm((data) => ({
-            ...data,
             address: item.logradouro,
-        }));
-        setDataForm((data) => ({ ...data, province: item.uf }));
-        setDataForm((data) => ({
-            ...data,
+            province: item.uf,
             zip_code: item.cep.replace("-", ""),
         }));
-
         setIsVisible(false);
     };
 

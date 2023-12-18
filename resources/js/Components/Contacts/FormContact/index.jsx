@@ -7,7 +7,7 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import { Api } from "@/Services/Api";
 import { useForm } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const TIPO_INSERT = "Adicionar";
 export const TIPO_UPDATE = "Editar";
@@ -25,7 +25,7 @@ export function FormContact({
     const [isSearchByAddressActive, setIsSearchByAddressActive] =
         useState(false);
 
-    const { data, setData, errors, processing } = useForm({
+    const { data, setData, errors, reset, processing } = useForm({
         name: contact?.name || "",
         cpf: contact?.cpf || "",
         phone: contact?.phone || "",
@@ -35,6 +35,26 @@ export function FormContact({
         province: contact?.address?.province || "",
         zip_code: contact?.address?.zip_code || "",
     });
+
+    useEffect(() => {
+        if (!contact) {
+            return;
+        }
+        setData((data) => ({
+            ...data,
+            name: contact.name,
+            cpf: contact.cpf,
+            phone: contact.phone,
+            neighborhood: contact.address.neighborhood,
+            city: contact.address?.city,
+            address: contact.address?.address,
+            province: contact.address?.province,
+        }));
+    }, [contact]);
+
+    useEffect(() => {
+        if (!isVisible) reset();
+    }, [isVisible]);
 
     const onSearchByCepPress = () => {
         setSearchByCepError("");
@@ -54,16 +74,10 @@ export function FormContact({
                 setData((data) => ({
                     ...data,
                     neighborhood: json.content?.bairro,
-                }));
-                setData((data) => ({
-                    ...data,
                     city: json.content?.localidade,
-                }));
-                setData((data) => ({
-                    ...data,
                     address: json.content?.logradouro,
+                    province: json.content?.uf,
                 }));
-                setData((data) => ({ ...data, province: json.content?.uf }));
             })
             .finally(() => {
                 setLoadingByCep(false);

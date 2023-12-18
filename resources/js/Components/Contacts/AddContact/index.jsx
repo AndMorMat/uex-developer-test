@@ -32,7 +32,8 @@ export function AddContact() {
                     return;
                 }
                 setIsModalVisible(false);
-                window.location.reload();
+                updateContacts();
+                // window.location.reload();
             })
             .finally(() => {
                 setIsLoading(false);
@@ -59,6 +60,7 @@ export function AddContact() {
                 tipo={TIPO_INSERT}
                 onHandleSubmit={onHandleSubmit}
                 submitError={error}
+                contact={null}
             />
         </>
     );
