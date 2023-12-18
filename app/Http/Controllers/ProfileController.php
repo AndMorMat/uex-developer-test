@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Contact;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,13 +49,10 @@ class ProfileController extends Controller
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);
-
         $user = $request->user();
-
+        Contact::where('user_id', $user->id)->delete();
         Auth::logout();
-
         $user->delete();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
