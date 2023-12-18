@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Contact;
 
-use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Response\ApiResponse;
-use App\Models\Address;
 use App\Models\Contact;
-use App\Services\CepService\CepService;
-use App\Services\CepService\Providers\Viacep\ViacepService;
-use Dotenv\Exception\ValidationException;
+use App\Services\ContactService\ContactService;
 use Illuminate\Http\Request;
 
 /**
@@ -21,10 +17,12 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contacts = Contact::orderBy('id', 'desc')->limit(20)->get();
-        return view('contact.contacts', ['contacts'=>$contacts]);
+        $searchParam = $request->get('q');
+        $contactService = new ContactService();
+        $contacts = $contactService->searchContacts($searchParam);
+        return new ApiResponse('Consulta realizada com sucesso', $contacts);
     }
 
     /**
@@ -32,21 +30,9 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'name' => 'required|max:255',
-                // 'cpf' => 'required|cpf_ou_cnpj',
-                'address.neighborhood' => 'required'
-              ]);
-
-            } catch (\Throwable $e) {
-                throw new ApiException($e->getMessage());
-            }
-
-            $contact = Contact::create($request->all());
-            $address = new Address($request->all()['address']);
-            $contact->address()->save($address);
-
+        $contactService = new ContactService();
+        $request->validate($contactService->getValidation());
+        $contactService->addContact($request->all());
         return new ApiResponse('Registro inserido com sucesso');
     }
 
@@ -55,7 +41,8 @@ class ContactController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $contact = Contact::with('address')->findOrFail($id)->toArray();
+        return new ApiResponse('Consulta realizada com sucesso', $contact);
     }
 
     /**
@@ -63,7 +50,10 @@ class ContactController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $contactService = new ContactService();
+        $request->validate($contactService->getValidation());
+        $contactService->updateContact($id, $request->all());
+        return new ApiResponse('Registro alterado com sucesso');
     }
 
     /**
@@ -71,6 +61,7 @@ class ContactController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Contact::destroy($id);
+        return new ApiResponse('Registro removido com sucesso');
     }
 }
