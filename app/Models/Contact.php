@@ -12,10 +12,19 @@ class Contact extends Model
     protected $fillable = [
         'name',
         'cpf',
-        'phone'
+        'phone',
+        'user_id'
     ];
 
     public function address() {
-        return $this->hasMany(Address::class);
+        return $this->hasOne(Address::class);
+    }
+
+    protected static function booted() {
+        static::deleting(function ($contact) {
+            if ($contact->address) {
+                $contact->address->delete();
+            }
+        });
     }
 }

@@ -15,6 +15,8 @@ class Address extends Model
         'city',
         'province',
         'neighborhood',
+        'lat',
+        'long'
     ];
 
     public function contact() {
