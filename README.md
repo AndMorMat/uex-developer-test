@@ -11,7 +11,7 @@ Toda comunicação com a api é realizada utilizando um token bearer, recuperado
 -   Laravel 10.10
 -   Php 8.1
 -   Docker
--   Chave de api google maps
+-   Api google maps ativa
 -   Api google geocode ativa
 
 # Endpoints
