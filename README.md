@@ -70,3 +70,8 @@ Payload:
 Remove um contato
 
 As rotas do fluxo de autenticação foram criadas com auxilio da lib Breeze (https://github.com/laravel/breeze), por isso não estão presentes nessa lista.
+
+## Andre Matos
+
+andre_matos13@hotmail.com  
+https://andrematos.dev.br
