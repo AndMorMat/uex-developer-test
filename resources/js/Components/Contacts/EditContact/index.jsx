@@ -10,6 +10,7 @@ export function EditContact({ contact }) {
     const [error, setError] = useState("");
 
     const onEdithandlePress = () => {
+        console.log("edit: ", contact.name);
         setIsModalVisible(true);
     };
 
@@ -33,12 +34,11 @@ export function EditContact({ contact }) {
             .then((response) => response.json())
             .then((json) => {
                 if (!json.success) {
-                    console.log(json);
                     setError(json.message);
                     return;
                 }
-                updateContacts();
                 setIsModalVisible(false);
+                window.location.reload();
             })
             .finally(() => {
                 setIsLoading(false);

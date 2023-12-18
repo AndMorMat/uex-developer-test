@@ -19,12 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::controller(CepProvidersController::class)->group(function () {
-    Route::get('/cep/{cepParam}', 'search')->name('cep.search');
-    Route::get('/cep/{province}/{city}/{searchParam}', 'searchStreet')->name('cep.searchstreet');
-});
-
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/cep/{cepParam}', [CepProvidersController::class, 'search'])->name('cep.search');
+    Route::get('/cep/{province}/{city}/{searchParam}', [CepProvidersController::class,'searchStreet'])->name('cep.searchstreet');
+
     Route::get('/contact', [ContactController::class, 'index'])->name('contact.search');
     Route::get('/contact-search/{id}', [ContactController::class, 'show'])->name('contact.show');
     Route::post('/contact-add', [ContactController::class, 'store'])->name('contact.add');

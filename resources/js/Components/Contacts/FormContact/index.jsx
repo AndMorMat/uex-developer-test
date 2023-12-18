@@ -38,7 +38,7 @@ export function FormContact({
 
     const onSearchByCepPress = () => {
         setSearchByCepError("");
-        if (!data.zip_code.trim()) {
+        if (!data?.zip_code?.toString().trim()) {
             setSearchByCepError("Necessário informar o cep");
             return;
         }

@@ -1,66 +1,72 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# UEX Test
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Projeto desenvolvido como parte de um processo seletivo para empresa UEX,
 
-## About Laravel
+A aplicação permite que o usuário se cadastre, crie e gerencie uma lista de contatos. O frontend foi desenvolvido em react e o backend em php, o frontend desconhece qualquer serviço externo, toda a comunicação é realizada somente com a api.
+Durante o processo de cadastro de um novo contato, o usuário tem a opção de buscar o endereço desejado de duas maneiras: fornecendo um CEP válido ou especificando a UF, cidade e parte do logradouro, em ambos os casos, a API se comunica com o serviço ViaCep para obter as informações completas do endereço. Além disso, ao adicionar um novo contato, a API se conecta ao Google GeoLocation para recuperar as coordenadas de latitude e longitude correspondentes ao endereço fornecido.
+Toda comunicação com a api é realizada utilizando um token bearer, recuperado no momento do login.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Requisitos técnicos
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   Laravel 10.10
+-   Php 8.1
+-   Docker
+-   Chave de api google maps
+-   Api google geocode ativa
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Endpoints
 
-## Learning Laravel
+**GET '/cep/{cepParam}**  
+Retorna uma endereço baseado em um cep
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**GET '/cep/{province}/{city}/{searchParam}'**  
+Retorna um endereço baseado no estado, cidade e nome da rua
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**GET '/contact'**  
+Retorna uma lista de contatos
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**GET '/contact-search/{id}'**  
+Busca um contato pelo id
 
-## Laravel Sponsors
+**POST '/contact-add'**  
+Insere um novo contato  
+Payload:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+{
+    "name": string,
+    "cpf": string,
+    "phone": string,
+    "address": {
+        "zip_code": string,
+        "address": string,
+        "neighborhood": string,
+        "city": string,
+        "province": string
+    }
+}
+```
 
-### Premium Partners
+**PUT '/contact-update/{id}'**  
+Altera um contato existente  
+Payload:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```
+{
+    "name": string,
+    "cpf": string,
+    "phone": string,
+    "address": {
+        "zip_code": string,
+        "address": string,
+        "neighborhood": string,
+        "city": string,
+        "province": string
+    }
+}
+```
 
-## Contributing
+**DELETE '/contact-delete/{id}'**  
+Remove um contato
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+As rotas do fluxo de autenticação foram criadas com auxilio da lib Breeze (https://github.com/laravel/breeze), por isso não estão presentes nessa lista.

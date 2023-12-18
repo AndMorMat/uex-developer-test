@@ -31,8 +31,8 @@ export function AddContact() {
                     setError(json.message);
                     return;
                 }
-                updateContacts();
                 setIsModalVisible(false);
+                window.location.reload();
             })
             .finally(() => {
                 setIsLoading(false);
