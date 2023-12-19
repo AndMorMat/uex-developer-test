@@ -20,8 +20,9 @@ class ContactController extends Controller
     public function index(Request $request)
     {
         $searchParam = $request->get('q');
+        $page = $request->get('page');
         $contactService = new ContactService();
-        $contacts = $contactService->searchContacts($searchParam);
+        $contacts = $contactService->searchContacts($searchParam, $page);
         return new ApiResponse('Consulta realizada com sucesso', $contacts);
     }
 

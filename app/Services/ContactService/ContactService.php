@@ -24,6 +24,8 @@ class ContactService {
      */
     private $authUser;
 
+    private $perPage = 5;
+
     public function __construct() {
         $this->geolocationService = new GeoLocationService(new GoogleService());
         $this->authUser = Auth::user();
@@ -40,7 +42,7 @@ class ContactService {
         ];
     }
 
-    public function searchContacts($searchParam = null) {
+    public function searchContacts($searchParam = null, $page = 1) {
 
         if($searchParam) {
             return Contact::with('address')
@@ -50,15 +52,14 @@ class ContactService {
                         ->orWhere('cpf', $searchParam);
                 })
                 ->orderBy('name', 'asc')
-                ->get()
+                ->paginate($this->perPage, ['*'], 'page', $page)
                 ->toArray();
         }
 
         return Contact::with('address')
                     ->where('user_id', $this->authUser->id)
                     ->orderBy('name', 'asc')
-                    ->limit(50)
-                    ->get()
+                    ->paginate($this->perPage, ['*'], 'page', $page)
                     ->toArray();
     }
 

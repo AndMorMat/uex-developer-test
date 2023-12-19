@@ -10,7 +10,6 @@ export function EditContact({ contact }) {
     const [error, setError] = useState("");
 
     const onEdithandlePress = () => {
-        console.log("edit: ", contact.name);
         setIsModalVisible(true);
     };
 

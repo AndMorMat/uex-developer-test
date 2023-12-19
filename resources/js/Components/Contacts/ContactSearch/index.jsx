@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ContactSearchItemList } from "../ContactSearchItemList";
 import { useGlobalContext } from "@/Contexts/global-context";
 import { useMapContext } from "@/Contexts/map-context";
+import { Pagination } from "../Pagination";
 
 export function ContactSearch() {
     const [searchParam, setSearchParam] = useState("");
@@ -10,6 +11,11 @@ export function ContactSearch() {
 
     const onSearchHandlePress = () => {
         updateContacts(searchParam);
+    };
+
+    const onSearchCancelHandlePress = () => {
+        setSearchParam("");
+        updateContacts("");
     };
 
     useEffect(() => {
@@ -30,6 +36,12 @@ export function ContactSearch() {
                 />
                 <button
                     className="px-5 py-0 ml-2 border"
+                    onClick={onSearchCancelHandlePress}
+                >
+                    x
+                </button>
+                <button
+                    className="px-5 py-0 ml-2 border"
                     onClick={onSearchHandlePress}
                 >
                     Buscar
@@ -41,6 +53,7 @@ export function ContactSearch() {
                         <ContactSearchItemList item={item} />
                     ))}
             </div>
+            <Pagination searchParam={searchParam} />
         </div>
     );
 }
